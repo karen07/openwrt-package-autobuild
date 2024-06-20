@@ -8,20 +8,23 @@ fi
 
 PACKAGE_NAME=$1
 
-SDK="https://mirror-03.infra.openwrt.org/releases/23.05.3/targets/mediatek/filogic/openwrt-sdk-23.05.3-mediatek-filogic_gcc-12.3.0_musl.Linux-x86_64.tar.xz"
-ARCHIVE=$(basename $SDK)
+ROUTER_OS_RELEASE="$(ssh router cat /etc/os-release)"
+VERSION=$(echo "$ROUTER_OS_RELEASE" | grep VERSION | head -n 1 | sed -r 's/.*"([^"]+).*/\1/g')
+BOARD=$(echo "$ROUTER_OS_RELEASE" | grep OPENWRT_BOARD | head -n 1 | sed -r 's/.*"([^"]+).*/\1/g')
+SDK_WEB_FOLDER="https://downloads.openwrt.org/releases/$VERSION/targets/$BOARD/"
+SDK_ARCHIVE=$(curl -s $SDK_WEB_FOLDER | grep -i sdk | sed -r 's/.*href="([^"]+).*/\1/g')
 
-if [ ! -f "$ARCHIVE" ]; then
-	wget $SDK
+if [ ! -f "$SDK_ARCHIVE" ]; then
+	wget $SDK_WEB_FOLDER$SDK_ARCHIVE
 fi
 
-FOLDER=$(echo $ARCHIVE | rev | cut -c 8- | rev)
+SDK_FOLDER=$(echo $SDK_ARCHIVE | rev | cut -c 8- | rev)
 
-if [ ! -f "$FOLDER" ]; then
-	tar -xf $ARCHIVE
+if [ ! -f "$SDK_FOLDER" ]; then
+	tar -xf $SDK_ARCHIVE
 fi
 
-cd $FOLDER/
+cd $SDK_FOLDER/
 
 ./scripts/feeds update -a
 ./scripts/feeds install -a
