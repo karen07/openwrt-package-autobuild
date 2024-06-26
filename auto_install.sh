@@ -40,6 +40,8 @@ fi
 cat >auto.sh <<EOF
 #!/bin/sh
 
+make defconfig
+
 PACKAGE_SRC_FOLDER=package
 PACKAGE=$PACKAGE_NAME
 
