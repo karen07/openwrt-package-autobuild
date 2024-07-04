@@ -11,7 +11,7 @@ if [ -f /usr/bin/apt ]; then
 fi
 
 if [ -f /usr/bin/pacman ]; then
-	pacman --noconfirm
+	sudo pacman -S make wget rsync base-devel unzip python3 python-distutils-extra --noconfirm
 fi
 
 PACKAGE_NAME=$1
