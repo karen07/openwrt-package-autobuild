@@ -6,6 +6,14 @@ if [ "$1" != "antiblock" ] && [ "$1" != "yubikey-hack" ]; then
 	exit 1
 fi
 
+if [ -f /usr/bin/apt ]; then
+	sudo apt update && sudo apt-get install -y make unzip bzip2 build-essential libncurses5-dev libncursesw5-dev
+fi
+
+if [ -f /usr/bin/pacman ]; then
+	pacman --noconfirm
+fi
+
 PACKAGE_NAME=$1
 
 ROUTER_OS_RELEASE="$(ssh router cat /etc/os-release)"
