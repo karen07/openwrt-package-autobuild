@@ -1,8 +1,13 @@
 #!/bin/sh
 
 if [ "$1" != "antiblock" ] && [ "$1" != "yubikey-hack" ]; then
-	echo "Invalid package name"
+	echo "Argument 1: Invalid package name"
 	echo "Use antiblock or yubikey-hack"
+	exit 1
+fi
+
+if [ -z "$2" ]; then
+	echo "Argument 2: Empty router ssh name"
 	exit 1
 fi
 
@@ -15,8 +20,14 @@ if [ -f /usr/bin/pacman ]; then
 fi
 
 PACKAGE_NAME=$1
+ROUTER_NAME=$2
 
-ROUTER_OS_RELEASE="$(ssh router cat /etc/os-release)"
+if ! ssh $ROUTER_NAME cat /etc/os-release; then
+	echo "SSH connection or remote command failed"
+	exit 1
+fi
+
+ROUTER_OS_RELEASE="$(ssh $ROUTER_NAME cat /etc/os-release)"
 VERSION=$(echo "$ROUTER_OS_RELEASE" | grep VERSION | head -n 1 | sed -r 's/.*"([^"]+).*/\1/g')
 BOARD=$(echo "$ROUTER_OS_RELEASE" | grep OPENWRT_BOARD | head -n 1 | sed -r 's/.*"([^"]+).*/\1/g')
 SDK_WEB_FOLDER="https://downloads.openwrt.org/releases/$VERSION/targets/$BOARD/"
@@ -52,6 +63,7 @@ make defconfig
 
 PACKAGE_SRC_FOLDER=package
 PACKAGE=$PACKAGE_NAME
+ROUTER_NAME=$ROUTER_NAME
 
 PACKAGE_SRC_NAME=\$(ls \$PACKAGE_SRC_FOLDER | grep -i \$PACKAGE | grep -i package)
 PACKAGE_SRC_PATH=\$PACKAGE_SRC_FOLDER/\$PACKAGE_SRC_NAME
@@ -64,10 +76,10 @@ if make \$PACKAGE_SRC_PATH/compile; then
 	PACKAGE_NAME=\$(basename \$PACKAGE_PATH)
 
 	if [ -f "\$PACKAGE_PATH" ]; then
-		scp -O \$PACKAGE_PATH router:~/
-		ssh router opkg remove \$PACKAGE
-		ssh router opkg install \$PACKAGE_NAME
-		ssh router rm \$PACKAGE_NAME
+		scp -O \$PACKAGE_PATH \$ROUTER_NAME:~/
+		ssh \$ROUTER_NAME opkg remove \$PACKAGE
+		ssh \$ROUTER_NAME opkg install \$PACKAGE_NAME
+		ssh \$ROUTER_NAME rm \$PACKAGE_NAME
 		echo "Command succeeded"
 	fi
 else
