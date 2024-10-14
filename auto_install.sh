@@ -1,8 +1,8 @@
 #!/bin/sh
 
-if [ "$1" != "antiblock" ] && [ "$1" != "yubikey-hack" ]; then
+if [ "$1" != "antiblock" ] && [ "$1" != "yubikey-hack" ] && [ "$1" != "dns-perftest" ] && [ "$1" != "url-block-test" ]; then
 	echo "Argument 1: Invalid package name"
-	echo "Use antiblock or yubikey-hack"
+	echo "Use antiblock or yubikey-hack or dns-perftest or url-block-test"
 	exit 1
 fi
 
@@ -49,11 +49,15 @@ cd $SDK_FOLDER/
 ./scripts/feeds install -a
 
 if [ ! -f "package/$PACKAGE_NAME" ]; then
-	git clone --recursive git@github.com:karen07/$PACKAGE_NAME.git package/$PACKAGE_NAME
+	if ! git clone --recursive git@github.com:karen07/$PACKAGE_NAME.git package/$PACKAGE_NAME; then
+		git clone --recursive https://github.com/karen07/$PACKAGE_NAME.git package/$PACKAGE_NAME
+	fi
 fi
 
 if [ ! -f "package/$PACKAGE_NAME-openwrt-package" ]; then
-	git clone --recursive git@github.com:karen07/$PACKAGE_NAME-openwrt-package.git package/$PACKAGE_NAME-openwrt-package
+	if ! git clone --recursive git@github.com:karen07/$PACKAGE_NAME-openwrt-package.git package/$PACKAGE_NAME-openwrt-package; then
+		git clone --recursive https://github.com/karen07/$PACKAGE_NAME-openwrt-package.git package/$PACKAGE_NAME-openwrt-package
+	fi
 fi
 
 cat >auto.sh <<EOF
