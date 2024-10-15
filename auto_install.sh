@@ -22,7 +22,7 @@ fi
 PACKAGE_NAME=$1
 ROUTER_NAME=$2
 
-if ! ssh $ROUTER_NAME cat /etc/os-release; then
+if ! ssh -o StrictHostKeyChecking=no $ROUTER_NAME cat /etc/os-release; then
 	echo "SSH connection or remote command failed"
 	exit 1
 fi
@@ -47,6 +47,8 @@ cd $SDK_FOLDER/
 
 ./scripts/feeds update -a
 ./scripts/feeds install -a
+
+ssh -o StrictHostKeyChecking=no git@github.com
 
 if [ ! -f "package/$PACKAGE_NAME" ]; then
 	if ! git clone --recursive git@github.com:karen07/$PACKAGE_NAME.git package/$PACKAGE_NAME; then
