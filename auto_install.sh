@@ -80,6 +80,7 @@ if make -j$(nproc) package/$PACKAGE_BUILD_NAME/compile; then
 	if [ -f "\$PACKAGE_IPK_PATH" ]; then
 		scp -O \$PACKAGE_IPK_PATH $ROUTER_NAME:~/
 		ssh $ROUTER_NAME opkg remove --force-depends $PACKAGE_NAME
+		ssh $ROUTER_NAME opkg update
 		ssh $ROUTER_NAME opkg install \$PACKAGE_IPK_NAME
 		ssh $ROUTER_NAME rm \$PACKAGE_IPK_NAME
 		echo "Command succeeded"
