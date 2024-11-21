@@ -1,8 +1,8 @@
 #!/bin/sh
 
-if [ "$1" != "antiblock" ] && [ "$1" != "yubikey-hack" ] && [ "$1" != "dns-perf-test" ] && [ "$1" != "url-block-test" ] && [ "$1" != "dns-server-test" ]; then
+if [ "$1" != "antiblock" ] && [ "$1" != "yubikey-hack" ] && [ "$1" != "dns-perf-test" ] && [ "$1" != "url-block-test" ] && [ "$1" != "dns-server-test" ] && [ "$1" != "luci-app-antiblock" ]; then
 	echo "Argument 1: Invalid package name"
-	echo "Use antiblock or yubikey-hack or dns-perf-test or url-block-test or dns-server-test"
+	echo "Use antiblock or yubikey-hack or dns-perf-test or url-block-test or dns-server-test or luci-app-antiblock"
 	exit 1
 fi
 
@@ -50,15 +50,19 @@ cd $SDK_FOLDER/
 
 ssh -o StrictHostKeyChecking=no git@github.com
 
-if [ ! -f "package/$PACKAGE_NAME" ]; then
-	if ! git clone --recursive git@github.com:karen07/$PACKAGE_NAME.git package/$PACKAGE_NAME; then
-		git clone --recursive https://github.com/karen07/$PACKAGE_NAME.git package/$PACKAGE_NAME
+if [ "$PACKAGE_NAME" != "luci-app-antiblock" ]; then
+	if [ ! -f "package/$PACKAGE_NAME" ]; then
+		if ! git clone --recursive git@github.com:karen07/$PACKAGE_NAME.git package/$PACKAGE_NAME; then
+			git clone --recursive https://github.com/karen07/$PACKAGE_NAME.git package/$PACKAGE_NAME
+		fi
 	fi
 fi
 
-if [ ! -f "package/$PACKAGE_NAME-openwrt-package" ]; then
-	if ! git clone --recursive git@github.com:karen07/$PACKAGE_NAME-openwrt-package.git package/$PACKAGE_NAME-openwrt-package; then
-		git clone --recursive https://github.com/karen07/$PACKAGE_NAME-openwrt-package.git package/$PACKAGE_NAME-openwrt-package
+PACKAGE_BUILD_NAME=$PACKAGE_NAME-openwrt-package
+
+if [ ! -f "package/$PACKAGE_BUILD_NAME" ]; then
+	if ! git clone --recursive git@github.com:karen07/$PACKAGE_BUILD_NAME.git package/$PACKAGE_BUILD_NAME; then
+		git clone --recursive https://github.com/karen07/$PACKAGE_BUILD_NAME.git package/$PACKAGE_BUILD_NAME
 	fi
 fi
 
@@ -66,30 +70,22 @@ cat >auto.sh <<EOF
 #!/bin/sh
 
 make defconfig
+make package/$PACKAGE_BUILD_NAME/clean
 
-PACKAGE_SRC_FOLDER=package
-PACKAGE=$PACKAGE_NAME
-ROUTER_NAME=$ROUTER_NAME
+if make -j$(nproc) package/$PACKAGE_BUILD_NAME/compile; then
 
-PACKAGE_SRC_NAME=\$(ls \$PACKAGE_SRC_FOLDER | grep -i \$PACKAGE | grep -i package)
-PACKAGE_SRC_PATH=\$PACKAGE_SRC_FOLDER/\$PACKAGE_SRC_NAME
+	PACKAGE_IPK_PATH=\$(find bin | grep "/${PACKAGE_NAME}_")
+	PACKAGE_IPK_NAME=\$(basename \$PACKAGE_IPK_PATH)
 
-make \$PACKAGE_SRC_PATH/clean
-
-if make \$PACKAGE_SRC_PATH/compile; then
-
-	PACKAGE_PATH=\$(find bin | grep \$PACKAGE)
-	PACKAGE_NAME=\$(basename \$PACKAGE_PATH)
-
-	if [ -f "\$PACKAGE_PATH" ]; then
-		scp -O \$PACKAGE_PATH \$ROUTER_NAME:~/
-		ssh \$ROUTER_NAME opkg remove \$PACKAGE
-		ssh \$ROUTER_NAME opkg install \$PACKAGE_NAME
-		ssh \$ROUTER_NAME rm \$PACKAGE_NAME
+	if [ -f "\$PACKAGE_IPK_PATH" ]; then
+		scp -O \$PACKAGE_IPK_PATH $ROUTER_NAME:~/
+		ssh $ROUTER_NAME opkg remove --force-depends $PACKAGE_NAME
+		ssh $ROUTER_NAME opkg install \$PACKAGE_IPK_NAME
+		ssh $ROUTER_NAME rm \$PACKAGE_IPK_NAME
 		echo "Command succeeded"
 	fi
 else
-	make -j1 V=s \$PACKAGE_SRC_PATH/compile
+	make -j1 V=s package/$PACKAGE_BUILD_NAME/compile
 	echo "Command failed"
 fi
 EOF
