@@ -69,6 +69,9 @@ fi
 cat >auto.sh <<EOF
 #!/bin/sh
 
+echo "Building $PACKAGE_BUILD_NAME"
+echo ""
+
 make defconfig
 make package/$PACKAGE_BUILD_NAME/clean
 
