@@ -39,7 +39,7 @@ fi
 
 SDK_FOLDER=$(echo $SDK_ARCHIVE | rev | cut -c 8- | rev)
 
-if [ ! -f "$SDK_FOLDER" ]; then
+if [ ! -d "$SDK_FOLDER" ]; then
 	tar -xf $SDK_ARCHIVE
 fi
 
@@ -51,7 +51,7 @@ cd $SDK_FOLDER/
 ssh -o StrictHostKeyChecking=no git@github.com
 
 if [ "$PACKAGE_NAME" != "luci-app-antiblock" ]; then
-	if [ ! -f "package/$PACKAGE_NAME" ]; then
+	if [ ! -d "package/$PACKAGE_NAME" ]; then
 		if ! git clone --recursive git@github.com:karen07/$PACKAGE_NAME.git package/$PACKAGE_NAME; then
 			git clone --recursive https://github.com/karen07/$PACKAGE_NAME.git package/$PACKAGE_NAME
 		fi
@@ -60,7 +60,7 @@ fi
 
 PACKAGE_BUILD_NAME=$PACKAGE_NAME-openwrt-package
 
-if [ ! -f "package/$PACKAGE_BUILD_NAME" ]; then
+if [ ! -d "package/$PACKAGE_BUILD_NAME" ]; then
 	if ! git clone --recursive git@github.com:karen07/$PACKAGE_BUILD_NAME.git package/$PACKAGE_BUILD_NAME; then
 		git clone --recursive https://github.com/karen07/$PACKAGE_BUILD_NAME.git package/$PACKAGE_BUILD_NAME
 	fi
