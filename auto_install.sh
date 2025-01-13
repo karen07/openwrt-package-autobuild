@@ -37,7 +37,7 @@ if [ ! -f "$SDK_ARCHIVE" ]; then
 	wget $SDK_WEB_FOLDER$SDK_ARCHIVE
 fi
 
-SDK_FOLDER=$(echo $SDK_ARCHIVE | rev | cut -c 8- | rev)
+SDK_FOLDER=$(echo $SDK_ARCHIVE | rev | cut -d'.' -f2- | cut -d'.' -f2- | rev)
 
 if [ ! -d "$SDK_FOLDER" ]; then
 	tar -xf $SDK_ARCHIVE
