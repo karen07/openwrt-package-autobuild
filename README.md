@@ -2,5 +2,10 @@
 The script is needed to build programs from my repository for OpenWRT. He learns the architecture and version of OpenWRT via ssh and downloads the SDK. Downloads the program from the repository, builds it, and installs it on the router via ssh as a package.
 Available programs:
 ```
-antiblock or yubikey-hack or dns-perf-test or domains-block-test or dns-server-test or luci-app-antiblock
+antiblock
+yubikey-hack
+dns-perf-test
+domains-block-test
+dns-server-test
+luci-app-antiblock
 ```
