@@ -1,8 +1,8 @@
 #!/bin/sh
 
-if [ "$1" != "antiblock" ] && [ "$1" != "yubikey-hack" ] && [ "$1" != "dns-perf-test" ] && [ "$1" != "domains-block-test" ] && [ "$1" != "dns-server-test" ] && [ "$1" != "luci-app-antiblock" ]; then
+if [ "$1" != "antiblock" ] && [ "$1" != "yubikey-hack" ] && [ "$1" != "dns-client-test" ] && [ "$1" != "domains-block-test" ] && [ "$1" != "dns-server-test" ] && [ "$1" != "luci-app-antiblock" ]; then
 	echo "Argument 1: Invalid package name"
-	echo "Use antiblock or yubikey-hack or dns-perf-test or domains-block-test or dns-server-test or luci-app-antiblock"
+	echo "Use antiblock or yubikey-hack or dns-client-test or domains-block-test or dns-server-test or luci-app-antiblock"
 	exit 1
 fi
 

@@ -4,7 +4,7 @@ Available programs:
 ```
 antiblock
 yubikey-hack
-dns-perf-test
+dns-client-test
 domains-block-test
 dns-server-test
 luci-app-antiblock
