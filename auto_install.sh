@@ -30,8 +30,8 @@ if ! ssh -o StrictHostKeyChecking=no "$ROUTER_NAME" cat /etc/os-release; then
 fi
 
 ROUTER_OS_RELEASE="$(ssh "$ROUTER_NAME" cat /etc/os-release)"
-VERSION=$(echo "$ROUTER_OS_RELEASE" | grep VERSION | head -n 1 | sed -r 's/.*"([^"]+)".*/\1/g')
-BOARD=$(echo "$ROUTER_OS_RELEASE" | grep OPENWRT_BOARD | head -n 1 | sed -r 's/.*"([^"]+)".*/\1/g')
+VERSION=$(echo "$ROUTER_OS_RELEASE" | grep VERSION | head -n 1 | cut -d'"' -f2)
+BOARD=$(echo "$ROUTER_OS_RELEASE" | grep OPENWRT_BOARD | head -n 1 | cut -d'"' -f2)
 SDK_WEB_FOLDER="https://downloads.openwrt.org/releases/$VERSION/targets/$BOARD/"
 SDK_ARCHIVE=$(curl -s "$SDK_WEB_FOLDER" | grep -i sdk | sed -r 's/.*href="([^"]+)".*/\1/g')
 
