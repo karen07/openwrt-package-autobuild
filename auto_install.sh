@@ -71,6 +71,10 @@ fi
 cat >auto.sh <<EOF
 #!/bin/sh
 
+green=\$(printf '\033[0;32m')
+red=\$(printf '\033[0;31m')
+reset=\$(printf '\033[0m')
+
 echo "Building $PACKAGE_BUILD_NAME"
 echo ""
 
@@ -88,11 +92,11 @@ if make -j\$(nproc) package/$PACKAGE_BUILD_NAME/compile; then
         ssh "$ROUTER_NAME" opkg update
         ssh "$ROUTER_NAME" opkg install "\$PACKAGE_IPK_NAME"
         ssh "$ROUTER_NAME" rm "\$PACKAGE_IPK_NAME"
-        echo "Command succeeded"
+        printf '%sCommand succeeded%s\n' "\$green" "\$reset"
     fi
 else
     make -j1 V=s package/$PACKAGE_BUILD_NAME/compile
-    echo "Command failed"
+    printf '%sCommand failed%s\n' "\$red" "\$reset"
 fi
 EOF
 
