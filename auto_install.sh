@@ -18,7 +18,7 @@ if [ -f /usr/bin/apt ]; then
 fi
 
 if [ -f /usr/bin/pacman ]; then
-    sudo pacman -S make wget rsync base-devel unzip python3 python-distutils-extra --noconfirm
+    sudo pacman -S base-devel git python python-setuptools rsync swig --noconfirm
 fi
 
 PACKAGE_NAME="$1"
