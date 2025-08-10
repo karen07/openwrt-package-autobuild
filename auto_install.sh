@@ -14,7 +14,7 @@ if [ -z "$2" ]; then
 fi
 
 if [ -f /usr/bin/apt ]; then
-    sudo apt update && sudo apt-get install -y make unzip bzip2 build-essential libncurses5-dev libncursesw5-dev
+    sudo apt update && sudo apt-get install -y build-essential libncurses5-dev libncursesw5-dev swig unzip zstd
 fi
 
 if [ -f /usr/bin/pacman ]; then
