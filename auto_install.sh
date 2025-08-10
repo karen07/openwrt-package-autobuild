@@ -92,11 +92,11 @@ if make -j\$(nproc) package/$PACKAGE_BUILD_NAME/compile; then
         ssh "$ROUTER_NAME" opkg update
         ssh "$ROUTER_NAME" opkg install "\$PACKAGE_IPK_NAME"
         ssh "$ROUTER_NAME" rm "\$PACKAGE_IPK_NAME"
-        printf '%sCommand succeeded%s\n' "\$green" "\$reset"
+        printf '%sCommand succeeded %s%s\n' "\$green" "$PACKAGE_NAME" "\$reset"
     fi
 else
     make -j1 V=s package/$PACKAGE_BUILD_NAME/compile
-    printf '%sCommand failed%s\n' "\$red" "\$reset"
+    printf '%sCommand failed %s%s\n' "\$red" "$PACKAGE_NAME" "\$reset"
 fi
 EOF
 
