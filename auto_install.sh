@@ -14,11 +14,11 @@ if [ -z "$2" ]; then
 fi
 
 if [ -f /usr/bin/apt ]; then
-    sudo apt update && sudo apt-get install -y build-essential libncurses5-dev libncursesw5-dev swig unzip zstd
+    sudo apt update && sudo apt-get install -y build-essential libncurses-dev git rsync swig unzip zstd wget
 fi
 
 if [ -f /usr/bin/pacman ]; then
-    sudo pacman -Sy base-devel git python python-setuptools rsync swig unzip wget --noconfirm
+    sudo pacman -Sy base-devel python python-setuptools git rsync swig unzip zstd wget --noconfirm
 fi
 
 PACKAGE_NAME="$1"
