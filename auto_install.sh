@@ -81,10 +81,7 @@ fi
 
 cd "$SDK_FOLDER"/ || exit
 
-sed -i -E '
-s#https://git\.openwrt\.org/openwrt/openwrt\.git#https://github.com/openwrt/openwrt.git#g;
-s#https://git\.openwrt\.org/(feed|project)/#https://github.com/openwrt/#g
-' feeds.conf.default
+sed -i -E 's#https://git\.openwrt\.org/[^/]+/#https://github.com/openwrt/#g' feeds.conf.default
 
 ./scripts/feeds update -a
 ./scripts/feeds install -a
