@@ -71,7 +71,7 @@ SDK_ARCHIVE=$(
 )
 
 if [ ! -f "$SDK_ARCHIVE" ]; then
-    wget "${SDK_WEB_FOLDER}${SDK_ARCHIVE}"
+    wget -q "${SDK_WEB_FOLDER}${SDK_ARCHIVE}"
 fi
 
 SDK_FOLDER=$(
