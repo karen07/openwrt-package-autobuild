@@ -51,8 +51,12 @@ fi
 
 ROUTER_OS_RELEASE="$(ssh "$ROUTER_NAME" cat /etc/os-release)"
 
-VERSION=$(echo "$ROUTER_OS_RELEASE" \
-    | grep VERSION | head -n 1 | cut -d'"' -f2)
+if [ -z "$3" ]; then
+    VERSION=$(echo "$ROUTER_OS_RELEASE" \
+        | grep VERSION | head -n 1 | cut -d'"' -f2)
+else
+    VERSION="$3"
+fi
 
 BOARD=$(echo "$ROUTER_OS_RELEASE" \
     | grep OPENWRT_BOARD | head -n 1 | cut -d'"' -f2)
@@ -131,11 +135,15 @@ if make -j\$(nproc) package/$PACKAGE_BUILD_NAME/compile; then
     PACKAGE_IPK_NAME=\$(basename "\$PACKAGE_IPK_PATH")
 
     if [ -f "\$PACKAGE_IPK_PATH" ]; then
-        scp -O "\$PACKAGE_IPK_PATH" "$ROUTER_NAME":~/
-        ssh "$ROUTER_NAME" opkg remove --force-depends "$PACKAGE_NAME"
-        ssh "$ROUTER_NAME" opkg update
-        ssh "$ROUTER_NAME" opkg install "\$PACKAGE_IPK_NAME"
-        ssh "$ROUTER_NAME" rm "\$PACKAGE_IPK_NAME"
+        if [ -n "$3" ]; then
+            cp "\$PACKAGE_IPK_PATH" "../"
+        else
+            scp -O "\$PACKAGE_IPK_PATH" "$ROUTER_NAME":~/
+            ssh "$ROUTER_NAME" opkg remove --force-depends "$PACKAGE_NAME"
+            ssh "$ROUTER_NAME" opkg update
+            ssh "$ROUTER_NAME" opkg install "\$PACKAGE_IPK_NAME"
+            ssh "$ROUTER_NAME" rm "\$PACKAGE_IPK_NAME"
+        fi
         printf '%sCommand succeeded %s%s\n' "\$green" "$PACKAGE_NAME" "\$reset"
     fi
 else
