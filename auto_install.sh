@@ -65,7 +65,10 @@ OPENWRT_DL="https://downloads.openwrt.org/releases"
 SDK_WEB_FOLDER="$OPENWRT_DL/$VERSION/targets/$BOARD/"
 
 SDK_ARCHIVE=$(
-    curl -s "$SDK_WEB_FOLDER" \
+    if ! curl -fsSL "$SDK_WEB_FOLDER" 2>/dev/null; then
+        echo "Cannot reach: $SDK_WEB_FOLDER"
+        exit 1
+    fi \
         | grep -i sdk \
         | awk 'match($0, /href="([^"]+)"/, a) { print a[1] }'
 )
