@@ -134,7 +134,7 @@ make package/$PACKAGE_BUILD_NAME/clean
 
 if make -j\$(nproc) package/$PACKAGE_BUILD_NAME/compile; then
 
-    PACKAGE_IPK_PATH=\$(find bin | grep "/${PACKAGE_NAME}_")
+    PACKAGE_IPK_PATH=\$(find bin | grep "/${PACKAGE_NAME}-")
     PACKAGE_IPK_NAME=\$(basename "\$PACKAGE_IPK_PATH")
 
     if [ -f "\$PACKAGE_IPK_PATH" ]; then
@@ -142,9 +142,9 @@ if make -j\$(nproc) package/$PACKAGE_BUILD_NAME/compile; then
             cp "\$PACKAGE_IPK_PATH" "../"
         else
             scp -O "\$PACKAGE_IPK_PATH" "$ROUTER_NAME":~/
-            ssh "$ROUTER_NAME" opkg remove --force-depends "$PACKAGE_NAME"
-            ssh "$ROUTER_NAME" opkg update
-            ssh "$ROUTER_NAME" opkg install "\$PACKAGE_IPK_NAME"
+            ssh "$ROUTER_NAME" apk del "$PACKAGE_NAME"
+            ssh "$ROUTER_NAME" apk update
+            ssh "$ROUTER_NAME" apk add "\$PACKAGE_IPK_NAME"
             ssh "$ROUTER_NAME" rm "\$PACKAGE_IPK_NAME"
         fi
         printf '%sCommand succeeded %s%s\n' "\$green" "$PACKAGE_NAME" "\$reset"
