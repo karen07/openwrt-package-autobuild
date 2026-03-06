@@ -61,6 +61,9 @@ fi
 BOARD=$(echo "$ROUTER_OS_RELEASE" \
     | grep OPENWRT_BOARD | head -n 1 | cut -d'"' -f2)
 
+BOARD_ARCH=$(echo "$ROUTER_OS_RELEASE" \
+    | grep OPENWRT_ARCH | head -n 1 | cut -d'"' -f2)
+
 OPENWRT_DL="https://downloads.openwrt.org/releases"
 SDK_WEB_FOLDER="$OPENWRT_DL/$VERSION/targets/$BOARD/"
 
@@ -139,7 +142,7 @@ if make -j\$(nproc) package/$PACKAGE_BUILD_NAME/compile; then
 
     if [ -f "\$PACKAGE_APK_PATH" ]; then
         if [ -n "$3" ]; then
-            cp "\$PACKAGE_APK_PATH" "../"
+            cp "\$PACKAGE_APK_PATH" "../${BOARD_ARCH}-\$PACKAGE_APK_NAME"
         else
             scp -O "\$PACKAGE_APK_PATH" "$ROUTER_NAME":~/
             ssh "$ROUTER_NAME" apk del "$PACKAGE_NAME"
