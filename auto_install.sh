@@ -1,5 +1,9 @@
 #!/bin/sh
 
+SCRIPT_DIR=$(
+    CDPATH='' cd -- "$(dirname -- "$0")" && pwd
+)
+
 usage() {
     cat <<'EOF'
 Usage:
@@ -72,7 +76,8 @@ install_host_dependencies() {
 }
 
 require_ssh() {
-    if ! ssh -o StrictHostKeyChecking=no "$ROUTER_NAME" cat /etc/os-release >/dev/null 2>&1; then
+    if ! ssh -o StrictHostKeyChecking=no "$ROUTER_NAME" \
+        cat /etc/os-release >/dev/null 2>&1; then
         echo "SSH connection or remote command failed: $ROUTER_NAME"
         exit 1
     fi
@@ -248,7 +253,7 @@ else
 fi
 
 generate_build_script \
-    "build_in_sdk.sh.in" \
+    "$SCRIPT_DIR/build_in_sdk.sh.in" \
     "./build_in_sdk.sh"
 
 ./build_in_sdk.sh

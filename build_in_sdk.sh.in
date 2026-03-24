@@ -35,13 +35,16 @@ if make -j"$(nproc)" "package/$PACKAGE_BUILD_NAME/compile"; then
             ssh "$ROUTER_NAME" rm "$PACKAGE_APK_NAME"
         fi
 
-        printf '%sCommand succeeded %s%s\n' "$green" "$PACKAGE_NAME" "$reset"
+        printf '%sCommand succeeded %s%s\n' \
+            "$green" "$PACKAGE_NAME" "$reset"
     else
-        printf '%sAPK not found for %s%s\n' "$red" "$PACKAGE_NAME" "$reset"
+        printf '%sAPK not found for %s%s\n' \
+            "$red" "$PACKAGE_NAME" "$reset"
         exit 1
     fi
 else
     make -j1 V=s "package/$PACKAGE_BUILD_NAME/compile"
-    printf '%sCommand failed %s%s\n' "$red" "$PACKAGE_NAME" "$reset"
+    printf '%sCommand failed %s%s\n' \
+        "$red" "$PACKAGE_NAME" "$reset"
     exit 1
 fi
