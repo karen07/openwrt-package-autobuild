@@ -1,0 +1,47 @@
+#!/bin/sh
+
+green=$(printf '\033[0;32m')
+red=$(printf '\033[0;31m')
+reset=$(printf '\033[0m')
+
+PACKAGE_BUILD_NAME='@PACKAGE_BUILD_NAME@'
+PACKAGE_NAME='@PACKAGE_NAME@'
+ROUTER_NAME='@ROUTER_NAME@'
+BOARD_ARCH='@BOARD_ARCH@'
+COPY_ONLY='@COPY_ONLY@'
+
+echo "Building $PACKAGE_BUILD_NAME"
+echo
+
+make defconfig
+make "package/$PACKAGE_BUILD_NAME/clean"
+
+if make -j"$(nproc)" "package/$PACKAGE_BUILD_NAME/compile"; then
+    PACKAGE_APK_PATH=$(
+        find bin -type f | grep "/${PACKAGE_NAME}-" | head -n 1
+    )
+    PACKAGE_APK_NAME=$(basename "$PACKAGE_APK_PATH")
+
+    if [ -f "$PACKAGE_APK_PATH" ]; then
+        if [ -n "$COPY_ONLY" ]; then
+            cp "$PACKAGE_APK_PATH" "../${BOARD_ARCH}-$PACKAGE_APK_NAME"
+        else
+            scp -O "$PACKAGE_APK_PATH" "$ROUTER_NAME":~/
+            # shellcheck disable=SC2029
+            ssh "$ROUTER_NAME" apk del "$PACKAGE_NAME" || true
+            ssh "$ROUTER_NAME" apk update
+            ssh "$ROUTER_NAME" apk add --allow-untrusted "$PACKAGE_APK_NAME"
+            # shellcheck disable=SC2029
+            ssh "$ROUTER_NAME" rm "$PACKAGE_APK_NAME"
+        fi
+
+        printf '%sCommand succeeded %s%s\n' "$green" "$PACKAGE_NAME" "$reset"
+    else
+        printf '%sAPK not found for %s%s\n' "$red" "$PACKAGE_NAME" "$reset"
+        exit 1
+    fi
+else
+    make -j1 V=s "package/$PACKAGE_BUILD_NAME/compile"
+    printf '%sCommand failed %s%s\n' "$red" "$PACKAGE_NAME" "$reset"
+    exit 1
+fi
