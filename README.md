@@ -1,11 +1,15 @@
-# Openwrt package autobuild
-The script is needed to build programs from my repository for OpenWRT. He learns the architecture and version of OpenWRT via ssh and downloads the SDK. Downloads the program from the repository, builds it, and installs it on the router via ssh as a package.
-Available programs:
-```
-antiblock
-yubikey-hack
-dns-client-test
-domains-block-test
-dns-server-test
-luci-app-antiblock
-```
+# OpenWrt Package Autobuild
+
+This script builds packages from my repositories for OpenWrt.
+
+It connects to the router over SSH, detects the OpenWrt version and target architecture, downloads the matching SDK, clones the package sources, builds the package, and installs it on the router over SSH.
+
+## Available packages
+
+- antiblock
+- yubikey-hack
+- dns-client-test
+- domains-block-test
+- dns-server-test
+- luci-app-antiblock
+- QUICTun
