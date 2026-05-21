@@ -201,8 +201,8 @@ for pkg in $SELECTED_PACKAGES; do
 done
 
 for cmd in \
-    awk basename cp curl dirname find git \
-    head make mkdir nproc pwd readlink rm sed sort \
+    awk basename cp curl find git \
+    head make mkdir nproc pwd rm sed sort \
     tail tar wget; do
     need_cmd "$cmd"
 done
