@@ -1,7 +1,5 @@
 #!/bin/sh
 
-SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
-
 GITHUB_OWNER="${GITHUB_OWNER:-karen07}"
 
 PACKAGES="antiblock \
@@ -401,7 +399,10 @@ for pkg in $BUILD_PACKAGES; do
     echo "Building $pkg"
     echo
 
-    make "$path/clean" || die "Clean failed: $pkg"
+    if ! make "$path/clean"; then
+        make -j1 V=s "$path/clean" || true
+        die "Clean failed: $pkg"
+    fi
 
     if ! make -j"$(nproc)" "$path/compile"; then
         make -j1 V=s "$path/compile" || true
