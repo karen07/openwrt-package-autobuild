@@ -1,10 +1,10 @@
 # OpenWrt Package Autobuild
 
-This script builds my packages for OpenWrt using the official OpenWrt SDK.
+Этот скрипт собирает мои пакеты для OpenWrt с помощью официального OpenWrt SDK.
 
-It can connect to the router over SSH, detect the OpenWrt target architecture, download the matching SDK, clone package sources from GitHub, build packages, and either install them on the router or save APK files locally.
+Он может подключаться к роутеру по SSH, определять целевую архитектуру OpenWrt, скачивать подходящий SDK, клонировать исходники пакетов с GitHub, собирать пакеты, а затем либо устанавливать их на роутер, либо сохранять APK-файлы локально.
 
-## Available packages
+## Доступные пакеты
 
 - antiblock
 - yubikey-hack
@@ -15,7 +15,7 @@ It can connect to the router over SSH, detect the OpenWrt target architecture, d
 - QUICTun
 - all
 
-## Usage
+## Использование
 
 ```sh
 ./auto_install.sh install <package> <router>
@@ -23,43 +23,43 @@ It can connect to the router over SSH, detect the OpenWrt target architecture, d
 ./auto_install.sh build-target <package> <version> <target> <subtarget> <pkgarch> [output-dir]
 ```
 
-## Examples
+## Примеры
 
-Build and install one package on a router:
+Собрать и установить один пакет на роутер:
 
 ```sh
 ./auto_install.sh install antiblock router
 ```
 
-Build and install all packages on a router:
+Собрать и установить все пакеты на роутер:
 
 ```sh
 ./auto_install.sh install all router
 ```
 
-Build all packages for the same target as the router, but save APK files locally:
+Собрать все пакеты для той же цели, что и у роутера, но сохранить APK-файлы локально:
 
 ```sh
 ./auto_install.sh build-router all router 25.12.4
 ```
 
-Save APK files to a specific directory:
+Сохранить APK-файлы в указанную директорию:
 
 ```sh
 ./auto_install.sh build-router all router 25.12.4 release
 ```
 
-Build without connecting to a router:
+Собрать без подключения к роутеру:
 
 ```sh
 ./auto_install.sh build-target all 25.12.4 x86 64 x86_64 release
 ```
 
-## GitHub owner
+## Владелец GitHub
 
-By default, repositories are cloned from `karen07`.
+По умолчанию репозитории клонируются из `karen07`.
 
-You can override it with:
+Это можно переопределить так:
 
 ```sh
 GITHUB_OWNER=someuser ./auto_install.sh build-router all router 25.12.4
